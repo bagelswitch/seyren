@@ -20,11 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Strings;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 
+import com.google.common.base.Strings;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -40,6 +40,7 @@ public class MongoMapper {
         String id = dbo.get("_id").toString();
         String name = getString(dbo, "name");
         String description = getString(dbo, "description");
+        Check.Type type = getCheckType(getString(dbo, "type"));
         String target = getString(dbo, "target");
         String from = Strings.emptyToNull(getString(dbo, "from"));
         String until = Strings.emptyToNull(getString(dbo, "until"));
@@ -59,6 +60,7 @@ public class MongoMapper {
         return new Check().withId(id)
                 .withName(name)
                 .withDescription(description)
+                .withType(type)
                 .withTarget(target)
                 .withFrom(from)
                 .withUntil(until)
@@ -71,7 +73,7 @@ public class MongoMapper {
                 .withLastCheck(lastCheck)
                 .withSubscriptions(subscriptions);
     }
-    
+
     public Subscription subscriptionFrom(DBObject dbo) {
         String id = dbo.get("_id").toString();
         String target = getString(dbo, "target");
@@ -286,5 +288,8 @@ public class MongoMapper {
     private SubscriptionType getSubscriptionType(String value) {
         return value == null ? null : SubscriptionType.valueOf(value);
     }
-    
+
+    private Check.Type getCheckType(String value) {
+        return value == null ? null : Check.Type.valueOf(value);
+    }
 }

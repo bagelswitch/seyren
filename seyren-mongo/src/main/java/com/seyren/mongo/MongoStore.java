@@ -13,7 +13,8 @@
  */
 package com.seyren.mongo;
 
-import static com.seyren.mongo.NiceDBObject.*;
+import static com.seyren.mongo.NiceDBObject.forId;
+import static com.seyren.mongo.NiceDBObject.object;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,13 +25,13 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.base.Strings;
 import org.apache.commons.lang.Validate;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Bytes;
 import com.mongodb.CommandFailureException;
@@ -238,6 +239,7 @@ public class MongoStore implements ChecksStore, AlertsStore, SubscriptionsStore 
         DBObject partialObject = object("name", check.getName())
                 .with("description", check.getDescription())
                 .with("target", check.getTarget())
+                .with("type", check.getType().toString())
                 .with("from", Strings.emptyToNull(check.getFrom()))
                 .with("until", Strings.emptyToNull(check.getUntil()))
                 .with("warn", check.getWarn().toPlainString())

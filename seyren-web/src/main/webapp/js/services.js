@@ -56,7 +56,7 @@
             });
         }).
         factory('Metrics', function ($resource) {
-            return $resource('api/metrics/:target/:action', {target: "@target"}, {
+            return $resource('api/metrics/:action', null, {
                 'totalMetric':      {method: 'GET', params: {action: 'total'}}
             });
         }).

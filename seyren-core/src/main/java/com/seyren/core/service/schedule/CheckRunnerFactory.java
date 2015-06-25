@@ -37,7 +37,9 @@ public class CheckRunnerFactory {
     private final Iterable<NotificationService> notificationServices;
     
     @Inject
-    public CheckRunnerFactory(AlertsStore alertsStore, ChecksStore checksStore, TargetChecker targetChecker, ValueChecker valueChecker,
+    public CheckRunnerFactory(AlertsStore alertsStore, ChecksStore checksStore,
+                              @Named("multiTypeTargetChecker") TargetChecker targetChecker,
+                              ValueChecker valueChecker,
             List<NotificationService> notificationServices) {
         this.alertsStore = alertsStore;
         this.checksStore = checksStore;
@@ -51,7 +53,8 @@ public class CheckRunnerFactory {
     }
 
     public CheckRunner create(Check check, BigDecimal value) {
-        return new CheckRunner(check, alertsStore, checksStore, new NoopTargetCheck(value), valueChecker, notificationServices);
+        return new CheckRunner(check, alertsStore, checksStore, new NoopTargetCheck(value),
+                valueChecker, notificationServices);
     }
 
 }

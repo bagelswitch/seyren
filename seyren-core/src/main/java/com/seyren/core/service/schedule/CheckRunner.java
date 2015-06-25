@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.inject.Named;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +47,8 @@ public class CheckRunner implements Runnable {
     private final ValueChecker valueChecker;
     private final Iterable<NotificationService> notificationServices;
     
-    public CheckRunner(Check check, AlertsStore alertsStore, ChecksStore checksStore, TargetChecker targetChecker, ValueChecker valueChecker,
+    public CheckRunner(Check check, AlertsStore alertsStore, ChecksStore checksStore,
+                       @Named("multiTypeTargetChecker") TargetChecker targetChecker, ValueChecker valueChecker,
             Iterable<NotificationService> notificationServices) {
         this.check = check;
         this.alertsStore = alertsStore;
@@ -149,7 +152,7 @@ public class CheckRunner implements Runnable {
             LOGGER.warn("{} failed", check.getName(), e);
         }
     }
-    
+
     private boolean isStillOk(AlertType last, AlertType current) {
         return last == AlertType.OK && current == AlertType.OK;
     }

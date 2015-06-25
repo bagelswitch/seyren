@@ -19,27 +19,29 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.google.common.base.Optional;
 import com.seyren.api.jaxrs.MetricsResource;
 import com.seyren.core.domain.Check;
-import com.seyren.core.service.checker.GraphiteTargetChecker;
+import com.seyren.core.service.checker.TargetChecker;
 
 @Named
 public class MetricsBean implements MetricsResource {
-    private final GraphiteTargetChecker graphiteTargetChecker;
+
+    private final TargetChecker targetChecker;
 
     @Inject
-    public MetricsBean(GraphiteTargetChecker graphiteTargetChecker) {
-        this.graphiteTargetChecker = graphiteTargetChecker;
+    public MetricsBean(@Named("multiTypeTargetChecker") TargetChecker targetChecker) {
+        this.targetChecker = targetChecker;
     }
 
     @Override
-    public Response totalMetric(@PathParam("target") String target) {
+    public Response totalMetric(@QueryParam("type") Check.Type type,
+                                @QueryParam("target") String target) {
         try {
-            Map<String, Optional<BigDecimal>> targetValues = graphiteTargetChecker.check(new Check().withTarget(target).withName(target));
+            Map<String, Optional<BigDecimal>> targetValues = targetChecker.check(new Check().withType(type).withTarget(target).withName(target));
             Map<String, Integer> result = new HashMap<String, Integer>();
             result.put(target, targetValues.size());
             return Response.ok(result).build();
@@ -47,5 +49,4 @@ public class MetricsBean implements MetricsResource {
             return Response.serverError().build();
         }
     }
-
 }

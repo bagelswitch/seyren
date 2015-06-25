@@ -28,6 +28,11 @@ public class NoopTargetCheck implements TargetChecker {
     }
 
     @Override
+    public boolean canHandle(Check check) {
+        return true;
+    }
+
+    @Override
     public Map<String, Optional<BigDecimal>> check(Check check) throws Exception {
         return ImmutableMap.of(check.getTarget(), Optional.<BigDecimal>of(value));
     }

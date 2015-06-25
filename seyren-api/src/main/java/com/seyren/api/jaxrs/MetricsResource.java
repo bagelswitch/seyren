@@ -15,17 +15,20 @@ package com.seyren.api.jaxrs;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.seyren.core.domain.Check;
 
 @Path("/")
 public interface MetricsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/metrics/{target}/total")
-    Response totalMetric(@PathParam("target") String target);
+    @Path("/metrics/total")
+    Response totalMetric(@QueryParam("type") Check.Type type,
+                         @QueryParam("target") String target);
     
 }

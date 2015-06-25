@@ -6,6 +6,7 @@
         $scope.master = {
             name: null,
             description: null,
+            type: "GRAPHITE",
             target: null,
             warn: null,
             error: null,
@@ -62,19 +63,20 @@
             }
         });
 
-        $scope.$watch('check.target + check.warn + check.error', function (value) {
-            if ($scope.check !== undefined && ($scope.config === undefined || (value !== undefined && $scope.config.graphsEnabled))) {
+        $scope.$watch('check.type + check.target + check.warn + check.error', function (value) {
+            if ($scope.check !== undefined && ($scope.config === undefined || (value !== undefined && $scope.config.graphsEnabled))
+                    && $scope.check.type === "GRAPHITE") {
                 $scope.check.previewImage = Graph.previewImage($scope.check);
             } else {
-                return "./img/preview-nodata.png";
+                $scope.check.previewImage = "./img/preview-nodata.png";
             }
         });
 
 
-        $scope.$watch('check.target', function(value) {
-            if (value) {
-                Metrics.totalMetric({target: value}, function (data) {
-                    $scope.check.totalMetric = data[value];
+        $scope.$watch('check.type + check.target', function(value) {
+            if ($scope.check.type && $scope.check.target) {
+                Metrics.totalMetric({type: $scope.check.type, target: $scope.check.target}, function (data) {
+                    $scope.check.totalMetric = data[$scope.check.target];
                 }, function () {
                     console.log('Metrics count failed');
                     $scope.check.totalMetric = '-';

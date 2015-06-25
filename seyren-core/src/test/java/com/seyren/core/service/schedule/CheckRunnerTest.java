@@ -13,8 +13,12 @@
  */
 package com.seyren.core.service.schedule;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -58,6 +62,7 @@ public class CheckRunnerTest {
         mockAlertsStore = mock(AlertsStore.class);
         mockChecksStore = mock(ChecksStore.class);
         mockTargetChecker = mock(TargetChecker.class);
+        when(mockTargetChecker.canHandle(any(Check.class))).thenReturn(true);
         mockValueChecker = mock(ValueChecker.class);
         mockNotificationService = mock(NotificationService.class);
         mockNotificationServices = Arrays.asList(mockNotificationService);

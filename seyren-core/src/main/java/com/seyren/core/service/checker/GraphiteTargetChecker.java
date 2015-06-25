@@ -41,7 +41,12 @@ public class GraphiteTargetChecker implements TargetChecker {
     public GraphiteTargetChecker(GraphiteHttpClient graphiteHttpClient) {
         this.graphiteHttpClient = graphiteHttpClient;
     }
-    
+
+    @Override
+    public boolean canHandle(Check check) {
+        return check.getType() == Check.Type.GRAPHITE;
+    }
+
     @Override
     public Map<String, Optional<BigDecimal>> check(Check check) throws Exception {
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();

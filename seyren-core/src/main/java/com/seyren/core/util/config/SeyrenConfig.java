@@ -48,6 +48,15 @@ public class SeyrenConfig {
     private final int graphiteConnectionRequestTimeout;
     private final int graphiteConnectTimeout;
     private final int graphiteSocketTimeout;
+
+    private final String influxDbUrl;
+    private final String influxDbUsername;
+    private final String influxDbPassword;
+    private final String influxDbDatabase;
+    private final int influxDbConnectionRequestTimeout;
+    private final int influxDbConnectTimeout;
+    private final int influxDbSocketTimeout;
+
     private final String twilioUrl;
     private final String twilioAccountSid;
     private final String twilioAuthToken;
@@ -103,6 +112,16 @@ public class SeyrenConfig {
         this.graphiteConnectionRequestTimeout = Integer.parseInt(configOrDefault("GRAPHITE_CONNECTION_REQUEST_TIMEOUT", "0"));
         this.graphiteConnectTimeout = Integer.parseInt(configOrDefault("GRAPHITE_CONNECT_TIMEOUT", "0"));
         this.graphiteSocketTimeout = Integer.parseInt(configOrDefault("GRAPHITE_SOCKET_TIMEOUT", "0"));
+
+        // InfluxDB
+
+        this.influxDbUrl = stripEnd(configOrDefault("INFLUXDB_URL", "http://localhost:8086"), "/");
+        this.influxDbUsername = configOrDefault("INFLUXDB_USERNAME", "root");
+        this.influxDbPassword = configOrDefault("INFLUXDB_PASSWORD", "root");
+        this.influxDbDatabase = configOrDefault("INFLUXDB_DATABASE", "stats");
+        this.influxDbConnectionRequestTimeout = Integer.parseInt(configOrDefault("INFLUXDB_CONNECTION_REQUEST_TIMEOUT", "0"));
+        this.influxDbConnectTimeout = Integer.parseInt(configOrDefault("INFLUXDB_CONNECT_TIMEOUT", "0"));
+        this.influxDbSocketTimeout = Integer.parseInt(configOrDefault("INFLUXDB_SOCKET_TIMEOUT", "0"));
 
         // HTTP
 
@@ -389,6 +408,41 @@ public class SeyrenConfig {
     @JsonIgnore
     public int getGraphiteSocketTimeout() {
         return graphiteSocketTimeout;
+    }
+
+    @JsonIgnore
+    public String getInfluxDbUrl() {
+        return influxDbUrl;
+    }
+
+    @JsonIgnore
+    public String getInfluxDbUsername() {
+        return influxDbUsername;
+    }
+
+    @JsonIgnore
+    public String getInfluxDbPassword() {
+        return influxDbPassword;
+    }
+
+    @JsonIgnore
+    public String getInfluxDbDatabase() {
+        return influxDbDatabase;
+    }
+
+    @JsonIgnore
+    public int getInfluxDbConnectionRequestTimeout() {
+        return influxDbConnectionRequestTimeout;
+    }
+
+    @JsonIgnore
+    public int getInfluxDbConnectTimeout() {
+        return influxDbConnectTimeout;
+    }
+
+    @JsonIgnore
+    public int getInfluxDbSocketTimeout() {
+        return influxDbSocketTimeout;
     }
 
     @JsonIgnore

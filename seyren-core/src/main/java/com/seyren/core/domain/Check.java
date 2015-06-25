@@ -36,10 +36,15 @@ import com.seyren.core.util.math.BigDecimalSerializer;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Check {
-    
+
+    public enum Type {
+        GRAPHITE, INFLUXDB
+    }
+
     private String id;
     private String name;
     private String description;
+    private Type type = Type.GRAPHITE;
     private String target;
     private String from;
     private String until;
@@ -90,7 +95,20 @@ public class Check {
         this.description = description;
         return this;
     }
-    
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public Check withType(Type type) {
+        setType(type);
+        return this;
+    }
+
     public String getTarget() {
         return target;
     }
