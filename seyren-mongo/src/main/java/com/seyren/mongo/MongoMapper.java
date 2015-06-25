@@ -51,6 +51,7 @@ public class MongoMapper {
         boolean enabled = getBoolean(dbo, "enabled");
         boolean live = getOptionalBoolean(dbo, "live", false);
         boolean allowNoData = getOptionalBoolean(dbo, "allowNoData", false);
+        boolean disableSameStateAlerts = getOptionalBoolean(dbo, "disableSameStateAlerts", false);
         AlertType state = AlertType.valueOf(getString(dbo, "state"));
         DateTime lastCheck = getDateTime(dbo, "lastCheck");
         Map<String, BigDecimal> lastValues = targetValuesFrom(getBasicDBList(dbo, "lastValues"));
@@ -72,6 +73,7 @@ public class MongoMapper {
                 .withEnabled(enabled)
                 .withLive(live)
                 .withAllowNoData(allowNoData)
+                .withDisableSameStateAlerts(disableSameStateAlerts)
                 .withState(state)
                 .withLastCheck(lastCheck)
                 .withLastValues(lastValues)
@@ -189,6 +191,7 @@ public class MongoMapper {
         map.put("enabled", check.isEnabled());
         map.put("live", check.isLive());
         map.put("allowNoData", check.isAllowNoData());
+        map.put("disableSameStateAlerts", check.isDisableSameStateAlerts());
         map.put("state", check.getState().toString());
         if (check.getLastCheck() != null) {
             map.put("lastCheck", new Date(check.getLastCheck().getMillis()));

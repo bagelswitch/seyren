@@ -111,7 +111,8 @@ public class CheckRunner implements Runnable {
                     worstState = currentState;
                 }
                 
-                if (isStillOk(lastState, currentState)) {
+                if (isStillOk(lastState, currentState) ||
+                        check.isDisableSameStateAlerts() && lastState == currentState) {
                     continue;
                 }
                 

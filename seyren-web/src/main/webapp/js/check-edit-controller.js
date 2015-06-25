@@ -14,6 +14,7 @@
             enabled: true,
             live: false,
             allowNoData: false,
+            disableSameStateAlerts: true,
             totalMetric: '-'
         };
 

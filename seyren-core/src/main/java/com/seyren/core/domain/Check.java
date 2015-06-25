@@ -54,6 +54,7 @@ public class Check {
     private boolean enabled;
     private boolean live;
     private boolean allowNoData;
+    private boolean disableSameStateAlerts;
     private AlertType state;
     private Map<String, BigDecimal> lastValues;
     private DateTime lastCheck;
@@ -218,7 +219,20 @@ public class Check {
         setAllowNoData(allowNoData);
         return this;
     }
-    
+
+    public boolean isDisableSameStateAlerts() {
+        return disableSameStateAlerts;
+    }
+
+    public void setDisableSameStateAlerts(boolean disableSameStateAlerts) {
+        this.disableSameStateAlerts = disableSameStateAlerts;
+    }
+
+    public Check withDisableSameStateAlerts(boolean disable) {
+        setDisableSameStateAlerts(disable);
+        return this;
+    }
+
     public AlertType getState() {
         return state;
     }
