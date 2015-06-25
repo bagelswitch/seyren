@@ -74,7 +74,7 @@
 
 
         $scope.$watch('check.type + check.target', function(value) {
-            if ($scope.check.type && $scope.check.target) {
+            if ($scope.check !== undefined && $scope.check.type && $scope.check.target) {
                 Metrics.totalMetric({type: $scope.check.type, target: $scope.check.target}, function (data) {
                     $scope.check.totalMetric = data[$scope.check.target];
                 }, function () {
