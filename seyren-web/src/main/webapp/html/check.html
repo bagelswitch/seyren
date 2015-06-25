@@ -24,7 +24,7 @@
                     <p class="form-control-static">{{check.name}}</p>
                 </div>
             </div>
-            <div class="form-group detail-form">
+            <div class="form-group detail-form" ng-show="check.description">
                 <label class="col-lg-2 control-label">Description:</label>
                 <div class="col-lg-10">
                     <p class="form-control-static" ng-bind-html="check.descriptionHtml"></p>
@@ -54,13 +54,13 @@
                     <p class="form-control-static">{{check.target}}</p>
                 </div>
             </div>
-            <div class="form-group detail-form">
+            <div class="form-group detail-form" ng-show="check.from">
                 <label class="col-lg-2 control-label">From:</label>
                 <div class="col-lg-10">
                     <p class="form-control-static">{{check.from}}</p>
                 </div>
             </div>
-            <div class="form-group detail-form">
+            <div class="form-group detail-form" ng-show="check.until">
                 <label class="col-lg-2 control-label">Until:</label>
                 <div class="col-lg-10">
                     <p class="form-control-static">{{check.until}}</p>
