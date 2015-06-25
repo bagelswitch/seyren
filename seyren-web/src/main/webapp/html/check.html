@@ -1,4 +1,4 @@
-    <div class="row" ng-show="graphsEnabled() && check.type == 'GRAPHITE'">
+    <div class="row" ng-if="check.showGraphs()">
         <div class="col-lg-12">
             <div class="col-lg-3 graph" ng-repeat="graph in graphs">
                 <div class="thumbnail">
