@@ -65,7 +65,10 @@
         });
 
         $scope.$watch('check.type + check.target + check.warn + check.error', function (value) {
-            if ($scope.check !== undefined && ($scope.config === undefined || (value !== undefined && $scope.config.graphsEnabled))
+            if ($scope.check === undefined) {
+                return;
+            }
+            if ($scope.config === undefined || (value !== undefined && $scope.config.graphsEnabled)
                     && $scope.check.type === "GRAPHITE") {
                 $scope.check.previewImage = Graph.previewImage($scope.check);
             } else {
