@@ -104,6 +104,12 @@
         	<groupId>com.opsgenie.integration</groupId>
         	<artifactId>sdk</artifactId>
         	<version>[2.0.0,)</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
     	</dependency>
     </dependencies>
 	<repositories>
