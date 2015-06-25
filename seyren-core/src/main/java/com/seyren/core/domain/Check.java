@@ -39,7 +39,7 @@ import com.seyren.core.util.math.BigDecimalSerializer;
 public class Check {
 
     public enum Type {
-        GRAPHITE, INFLUXDB
+        GRAPHITE, INFLUX_DB
     }
 
     private String id;

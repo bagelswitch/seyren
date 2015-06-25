@@ -26,7 +26,7 @@ public class InfluxDbTargetChecker implements TargetChecker {
 
     @Override
     public boolean canHandle(Check check) {
-        return check.getType() == Check.Type.INFLUXDB;
+        return check.getType() == Check.Type.INFLUX_DB;
     }
 
     @Override
