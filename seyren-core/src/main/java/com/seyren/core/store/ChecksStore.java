@@ -13,7 +13,9 @@
  */
 package com.seyren.core.store;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -48,6 +50,7 @@ public interface ChecksStore {
     
     Check saveCheck(Check check);
 
-    Check updateStateAndLastCheck(String checkId, AlertType state, DateTime lastCheck);
+    Check updateStateAndLastCheckAndLastValues(String checkId, AlertType state, DateTime lastCheck,
+                                               Map<String, BigDecimal> lastValues);
     
 }

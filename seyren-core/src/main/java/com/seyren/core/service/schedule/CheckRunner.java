@@ -25,7 +25,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 import com.seyren.core.domain.Alert;
 import com.seyren.core.domain.AlertType;
 import com.seyren.core.domain.Check;
@@ -126,7 +128,14 @@ public class CheckRunner implements Runnable {
                 
             }
 
-            Check updatedCheck = checksStore.updateStateAndLastCheck(check.getId(), worstState, DateTime.now());
+            Check updatedCheck = checksStore.updateStateAndLastCheckAndLastValues(
+                    check.getId(), worstState, DateTime.now(), Maps.transformValues(targetValues,
+                            new Function<Optional<BigDecimal>, BigDecimal>() {
+                                @Override
+                                public BigDecimal apply(Optional<BigDecimal> input) {
+                                    return input.orNull();
+                                }
+                            }));
 
             if (interestingAlerts.isEmpty()) {
                 return;

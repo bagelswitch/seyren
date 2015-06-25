@@ -30,6 +30,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import com.google.common.base.Optional;
@@ -87,9 +88,11 @@ public class CheckRunnerTest {
         when(mockCheck.isEnabled()).thenReturn(true);
         when(mockCheck.isAllowNoData()).thenReturn(false);
         when(mockTargetChecker.check(mockCheck)).thenReturn(new HashMap<String, Optional<BigDecimal>>());
-        when(mockChecksStore.updateStateAndLastCheck(eq("id"), eq(AlertType.UNKNOWN), any(DateTime.class))).thenReturn(mockCheck);
+        when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.UNKNOWN), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         checkRunner.run();
-        verify(mockChecksStore).updateStateAndLastCheck(eq("id"),  eq(AlertType.UNKNOWN), any(DateTime.class));
+        verify(mockChecksStore).updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.UNKNOWN), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any());
     }
     
     @Test
@@ -98,9 +101,11 @@ public class CheckRunnerTest {
         when(mockCheck.isEnabled()).thenReturn(true);
         when(mockCheck.isAllowNoData()).thenReturn(true);
         when(mockTargetChecker.check(mockCheck)).thenReturn(new HashMap<String, Optional<BigDecimal>>());
-        when(mockChecksStore.updateStateAndLastCheck(eq("id"), eq(AlertType.OK), any(DateTime.class))).thenReturn(mockCheck);
+        when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.OK), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         checkRunner.run();
-        verify(mockChecksStore).updateStateAndLastCheck(eq("id"),  eq(AlertType.OK), any(DateTime.class));
+        verify(mockChecksStore).updateStateAndLastCheckAndLastValues(eq("id"),  eq(AlertType.OK), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any());
     }
     
     @Test
@@ -159,7 +164,8 @@ public class CheckRunnerTest {
         Alert alert = new Alert();
         
         when(mockAlertsStore.createAlert(eq("id"), any(Alert.class))).thenReturn(alert);
-        when(mockChecksStore.updateStateAndLastCheck(eq("id"), eq(AlertType.WARN), any(DateTime.class))).thenReturn(mockCheck);
+        when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.WARN), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         
         checkRunner.run();
         
@@ -189,7 +195,8 @@ public class CheckRunnerTest {
         Alert alert = new Alert();
         
         when(mockAlertsStore.createAlert(eq("id"), any(Alert.class))).thenReturn(alert);
-        when(mockChecksStore.updateStateAndLastCheck(eq("id"), eq(AlertType.ERROR), any(DateTime.class))).thenReturn(mockCheck);
+        when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.ERROR), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         
         checkRunner.run();
         
@@ -222,7 +229,8 @@ public class CheckRunnerTest {
         Alert alert = new Alert();
         
         when(mockAlertsStore.createAlert(eq("id"), any(Alert.class))).thenReturn(alert);
-        when(mockChecksStore.updateStateAndLastCheck(eq("id"), eq(AlertType.ERROR), any(DateTime.class))).thenReturn(mockCheck);
+        when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.ERROR), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         when(mockSubscription.shouldNotify(any(DateTime.class), eq(AlertType.ERROR))).thenReturn(false);
         
         checkRunner.run();
@@ -256,7 +264,8 @@ public class CheckRunnerTest {
         Alert alert = new Alert();
         
         when(mockAlertsStore.createAlert(eq("id"), any(Alert.class))).thenReturn(alert);
-        when(mockChecksStore.updateStateAndLastCheck(eq("id"), eq(AlertType.ERROR), any(DateTime.class))).thenReturn(mockCheck);
+        when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.ERROR), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         when(mockSubscription.shouldNotify(any(DateTime.class), eq(AlertType.ERROR))).thenReturn(true);
         when(mockNotificationService.canHandle(SubscriptionType.EMAIL)).thenReturn(false);
         
@@ -291,7 +300,8 @@ public class CheckRunnerTest {
         Alert alert = new Alert();
         
         when(mockAlertsStore.createAlert(eq("id"), any(Alert.class))).thenReturn(alert);
-        when(mockChecksStore.updateStateAndLastCheck(eq("id"), eq(AlertType.ERROR), any(DateTime.class))).thenReturn(mockCheck);
+        when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.ERROR), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         when(mockSubscription.shouldNotify(any(DateTime.class), eq(AlertType.ERROR))).thenReturn(true);
         when(mockNotificationService.canHandle(SubscriptionType.EMAIL)).thenReturn(true);
         
@@ -326,7 +336,8 @@ public class CheckRunnerTest {
         Alert alert = new Alert();
         
         when(mockAlertsStore.createAlert(eq("id"), any(Alert.class))).thenReturn(alert);
-        when(mockChecksStore.updateStateAndLastCheck(eq("id"), eq(AlertType.ERROR), any(DateTime.class))).thenReturn(mockCheck);
+        when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.ERROR), any(DateTime.class),
+                Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         when(mockSubscription.shouldNotify(any(DateTime.class), eq(AlertType.ERROR))).thenReturn(true);
         when(mockNotificationService.canHandle(SubscriptionType.EMAIL)).thenReturn(true);
         Mockito.doThrow(new NotificationFailedException("Boom!")).when(mockNotificationService).sendNotification(eq(mockCheck), eq(mockSubscription), any(List.class));

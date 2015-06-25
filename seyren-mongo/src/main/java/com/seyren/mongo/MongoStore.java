@@ -16,9 +16,11 @@ package com.seyren.mongo;
 import static com.seyren.mongo.NiceDBObject.forId;
 import static com.seyren.mongo.NiceDBObject.object;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -248,6 +250,7 @@ public class MongoStore implements ChecksStore, AlertsStore, SubscriptionsStore 
                 .with("live", check.isLive())
                 .with("allowNoData", check.isAllowNoData())
                 .with("lastCheck", lastCheck == null ? null : new Date(lastCheck.getMillis()))
+                .with("lastValues", check.getLastValues() == null ? null : mapper.targetValuesTo(check.getLastValues()))
                 .with("state", check.getState().toString());
         
         DBObject setObject = object("$set", partialObject);
@@ -258,11 +261,13 @@ public class MongoStore implements ChecksStore, AlertsStore, SubscriptionsStore 
     }
     
     @Override
-    public Check updateStateAndLastCheck(String checkId, AlertType state, DateTime lastCheck) {
+    public Check updateStateAndLastCheckAndLastValues(String checkId, AlertType state, DateTime lastCheck,
+                                                      Map<String, BigDecimal> lastValues) {
         DBObject findObject = forId(checkId);
         
         DBObject partialObject = object("lastCheck", new Date(lastCheck.getMillis()))
-                .with("state", state.toString());
+                .with("state", state.toString())
+                .with("lastValues", mapper.targetValuesTo(lastValues));
         
         DBObject setObject = object("$set", partialObject);
         

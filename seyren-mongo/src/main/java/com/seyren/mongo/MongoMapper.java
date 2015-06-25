@@ -15,6 +15,7 @@ package com.seyren.mongo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.joda.time.LocalTime;
 import com.google.common.base.Strings;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 import com.seyren.core.domain.Alert;
 import com.seyren.core.domain.AlertType;
@@ -51,6 +53,7 @@ public class MongoMapper {
         boolean allowNoData = getOptionalBoolean(dbo, "allowNoData", false);
         AlertType state = AlertType.valueOf(getString(dbo, "state"));
         DateTime lastCheck = getDateTime(dbo, "lastCheck");
+        Map<String, BigDecimal> lastValues = targetValuesFrom(getBasicDBList(dbo, "lastValues"));
         List<Subscription> subscriptions = new ArrayList<Subscription>();
         BasicDBList list = getBasicDBList(dbo, "subscriptions");
         for (Object o : list) {
@@ -71,7 +74,28 @@ public class MongoMapper {
                 .withAllowNoData(allowNoData)
                 .withState(state)
                 .withLastCheck(lastCheck)
+                .withLastValues(lastValues)
                 .withSubscriptions(subscriptions);
+    }
+
+    public Map<String, BigDecimal> targetValuesFrom(Collection<Object> list) {
+        Map<String, BigDecimal> r = new HashMap<>(list.size());
+        for (Object o: list) {
+            DBObject dbo = (DBObject) o;
+            r.put((String) dbo.get("target"), new BigDecimal((String) dbo.get("value")));
+        }
+        return r;
+    }
+
+    public List<Object> targetValuesTo(Map<String, BigDecimal> lastValues) {
+        List<Object> r = new ArrayList<>(lastValues.size());
+        for (Map.Entry<String, BigDecimal> e: lastValues.entrySet()) {
+            r.add(new BasicDBObjectBuilder()
+                    .add("target", e.getKey())
+                    .add("value", e.getValue().toPlainString())
+                    .get());
+        }
+        return r;
     }
 
     public Subscription subscriptionFrom(DBObject dbo) {
@@ -152,6 +176,7 @@ public class MongoMapper {
         map.put("_id", check.getId());
         map.put("name", check.getName());
         map.put("description", check.getDescription());
+        map.put("type", check.getType().toString());
         map.put("target", check.getTarget());
         map.put("from", check.getFrom());
         map.put("until", check.getUntil());
@@ -167,6 +192,9 @@ public class MongoMapper {
         map.put("state", check.getState().toString());
         if (check.getLastCheck() != null) {
             map.put("lastCheck", new Date(check.getLastCheck().getMillis()));
+        }
+        if (check.getLastValues() != null && !check.getLastValues().isEmpty()) {
+            map.put("lastValues",  targetValuesTo(check.getLastValues()));
         }
         if (check.getSubscriptions() != null && !check.getSubscriptions().isEmpty()) {
             final ArrayList<DBObject> dbSubscriptions = new ArrayList<DBObject>();
@@ -276,7 +304,7 @@ public class MongoMapper {
     private Integer getInteger(DBObject dbo, String key) {
         return (Integer) dbo.get(key);
     }
-    
+
     private BasicDBList getBasicDBList(DBObject dbo, String key) {
         BasicDBList result = (BasicDBList) dbo.get(key);
         if (result == null) {

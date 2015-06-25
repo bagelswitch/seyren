@@ -16,6 +16,7 @@ package com.seyren.core.domain;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 
@@ -54,6 +55,7 @@ public class Check {
     private boolean live;
     private boolean allowNoData;
     private AlertType state;
+    private Map<String, BigDecimal> lastValues;
     private DateTime lastCheck;
     private List<Subscription> subscriptions = new ArrayList<Subscription>();
     
@@ -238,7 +240,21 @@ public class Check {
         setLastCheck(lastCheck);
         return this;
     }
-    
+
+    @JsonSerialize(contentUsing = BigDecimalSerializer.class)
+    public Map<String, BigDecimal> getLastValues() {
+        return lastValues;
+    }
+
+    public void setLastValues(Map<String, BigDecimal> lastValues) {
+        this.lastValues = lastValues;
+    }
+
+    public Check withLastValues(Map<String, BigDecimal> lastValues) {
+        setLastValues(lastValues);
+        return this;
+    }
+
     public Check withState(AlertType state) {
         setState(state);
         return this;

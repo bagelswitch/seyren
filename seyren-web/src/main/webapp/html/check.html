@@ -102,6 +102,17 @@
                     <p class="form-control-static">{{check.lastCheck | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
                 </div>
             </div>
+            <div class="form-group detail-form">
+                <label class="col-lg-2 control-label">Last values:</label>
+                <div class="col-lg-10">
+                    <p class="form-control-static">
+                        <span ng-repeat="(target, value) in check.lastValues"
+                              popover="{{target}}" popover-trigger="mouseenter">
+                            {{value}}
+                        </span>
+                    </p>
+                </div>
+            </div>
             </form>
         </div>
         <div class="col-lg-6">
