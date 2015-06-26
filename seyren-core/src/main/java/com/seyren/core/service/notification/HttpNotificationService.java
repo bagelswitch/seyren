@@ -24,7 +24,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,6 +37,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seyren.core.domain.Alert;
 import com.seyren.core.domain.Check;
 import com.seyren.core.domain.Subscription;
@@ -72,7 +72,7 @@ public class HttpNotificationService implements NotificationService {
         body.put("check", check);
         body.put("subscription", subscription);
         body.put("alerts", alerts);        
-        body.put("preview", getPreviewImage(check)); 
+        body.put("preview", check.getType() == Check.Type.GRAPHITE ? getPreviewImage(check) : "");
         
         HttpClient client = HttpClientBuilder.create().build();
         HttpPost post;
