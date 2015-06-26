@@ -68,8 +68,8 @@
             if ($scope.check === undefined) {
                 return;
             }
-            if ($scope.config === undefined || (value !== undefined && $scope.config.graphsEnabled)
-                    && $scope.check.type === "GRAPHITE") {
+            if ($scope.config === undefined || (value !== undefined && $scope.config.graphsEnabled
+                    && $scope.check.type === "GRAPHITE")) {
                 $scope.check.previewImage = Graph.previewImage($scope.check);
             } else {
                 $scope.check.previewImage = "./img/preview-nodata.png";

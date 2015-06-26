@@ -47,8 +47,8 @@
                 $scope.check.descriptionHtml = $sce.trustAsHtml(linkify.normal($scope.check.description));
                 $scope.check.lastLoadTime = new Date().getTime();
                 $scope.check.showGraphs = function() {
-                    return $scope.graphsEnabled() && $scope.check.type == 'GRAPHITE';
-                }
+                    return $scope.graphsEnabled() && $scope.check.type === 'GRAPHITE';
+                };
             }, function (err) {
                 console.log('Loading check failed');
             });
