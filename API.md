@@ -1,4 +1,4 @@
-# Seyren API Document v1 
+# Seyren API Document v1 (OUTDATED)
 
 ## Alerts API
 

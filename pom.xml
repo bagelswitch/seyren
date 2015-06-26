@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
 
     <name>Seyren</name>
-    <description>An alerting dashboard for Graphite</description>
+    <description>An alerting dashboard for Graphite, InfluxDB and more</description>
     <url>https://github.com/scobal/seyren</url>
 
     <scm>

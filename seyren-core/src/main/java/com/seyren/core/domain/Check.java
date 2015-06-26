@@ -28,7 +28,7 @@ import com.fasterxml.jackson.datatype.joda.ser.DateTimeSerializer;
 import com.seyren.core.util.math.BigDecimalSerializer;
 
 /**
- * This class represents a graphite target that needs to be monitored.
+ * This class represents a target that needs to be monitored.
  * 
  * It stores current subscriptions
  * 
