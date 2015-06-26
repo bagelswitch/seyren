@@ -57,6 +57,13 @@ public class SeyrenConfig {
     private final int influxDbConnectTimeout;
     private final int influxDbSocketTimeout;
 
+    private final String elasticsearchUrl;
+    private final String elasticsearchUsername;
+    private final String elasticsearchPassword;
+    private final String elasticsearchIndex;
+    private final int elasticsearchConnectTimeout;
+    private final int elasticsearchSocketTimeout;
+
     private final String twilioUrl;
     private final String twilioAccountSid;
     private final String twilioAuthToken;
@@ -122,6 +129,15 @@ public class SeyrenConfig {
         this.influxDbConnectionRequestTimeout = Integer.parseInt(configOrDefault("INFLUXDB_CONNECTION_REQUEST_TIMEOUT", "0"));
         this.influxDbConnectTimeout = Integer.parseInt(configOrDefault("INFLUXDB_CONNECT_TIMEOUT", "0"));
         this.influxDbSocketTimeout = Integer.parseInt(configOrDefault("INFLUXDB_SOCKET_TIMEOUT", "0"));
+
+        // Elasticsearch
+
+        this.elasticsearchUrl = stripEnd(configOrDefault("ES_URL", "http://localhost:9200"), "/");
+        this.elasticsearchUsername = configOrDefault("ES_USERNAME", "");
+        this.elasticsearchPassword = configOrDefault("ES_PASSWORD", "");
+        this.elasticsearchIndex = configOrDefault("ES_DATABASE", "logstash-*");
+        this.elasticsearchConnectTimeout = Integer.parseInt(configOrDefault("ES_CONNECT_TIMEOUT", "0"));
+        this.elasticsearchSocketTimeout = Integer.parseInt(configOrDefault("ES_SOCKET_TIMEOUT", "0"));
 
         // HTTP
 
@@ -443,6 +459,36 @@ public class SeyrenConfig {
     @JsonIgnore
     public int getInfluxDbSocketTimeout() {
         return influxDbSocketTimeout;
+    }
+
+    @JsonIgnore
+    public String getElasticsearchUrl() {
+        return elasticsearchUrl;
+    }
+
+    @JsonIgnore
+    public String getElasticsearchUsername() {
+        return elasticsearchUsername;
+    }
+
+    @JsonIgnore
+    public String getElasticsearchPassword() {
+        return elasticsearchPassword;
+    }
+
+    @JsonIgnore
+    public String getElasticsearchIndex() {
+        return elasticsearchIndex;
+    }
+
+    @JsonIgnore
+    public int getElasticsearchConnectTimeout() {
+        return elasticsearchConnectTimeout;
+    }
+
+    @JsonIgnore
+    public int getElasticsearchSocketTimeout() {
+        return elasticsearchSocketTimeout;
     }
 
     @JsonIgnore
