@@ -84,7 +84,8 @@ public class MongoMapper {
         Map<String, BigDecimal> r = new HashMap<>(list.size());
         for (Object o: list) {
             DBObject dbo = (DBObject) o;
-            r.put((String) dbo.get("target"), new BigDecimal((String) dbo.get("value")));
+            Object value = dbo.get("value");
+            r.put((String) dbo.get("target"), value != null ? new BigDecimal((String) value) : null);
         }
         return r;
     }
@@ -94,7 +95,7 @@ public class MongoMapper {
         for (Map.Entry<String, BigDecimal> e: lastValues.entrySet()) {
             r.add(new BasicDBObjectBuilder()
                     .add("target", e.getKey())
-                    .add("value", e.getValue().toPlainString())
+                    .add("value", e.getValue() != null ? e.getValue().toPlainString() : null)
                     .get());
         }
         return r;
