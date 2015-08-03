@@ -4,24 +4,21 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.seyren.core.domain.Check;
-import com.seyren.core.service.checker.elasticsearch.template.Mean;
 import com.seyren.core.service.checker.elasticsearch.template.Base;
 import com.seyren.core.service.checker.elasticsearch.template.Count;
 import com.seyren.core.service.checker.elasticsearch.template.Elapsed;
+import com.seyren.core.service.checker.elasticsearch.template.Mean;
 import com.seyren.core.service.checker.support.CheckTemplate;
 import com.seyren.core.service.checker.support.YamlTargetCheckerSupport;
 import com.seyren.core.util.config.SeyrenConfig;
-import com.seyren.core.util.elasticsearch.ElasticsearchClient;
 
 @Named
 public class ElasticsearchTargetChecker extends YamlTargetCheckerSupport {
 
-    private final ElasticsearchClient client;
     private String timestampField;
 
     @Inject
-    public ElasticsearchTargetChecker(ElasticsearchClient client, SeyrenConfig config) {
-        this.client = client;
+    public ElasticsearchTargetChecker(SeyrenConfig config) {
         this.timestampField = config.getElasticsearchTimestampField();
 
         registerTemplate("elapsed", Elapsed.class);
