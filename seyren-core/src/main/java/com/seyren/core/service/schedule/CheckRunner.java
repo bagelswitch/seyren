@@ -50,7 +50,7 @@ public class CheckRunner implements Runnable {
     private final Iterable<NotificationService> notificationServices;
     
     public CheckRunner(Check check, AlertsStore alertsStore, ChecksStore checksStore,
-                       @Named("multiTypeTargetChecker") TargetChecker targetChecker, ValueChecker valueChecker,
+                       TargetChecker targetChecker, ValueChecker valueChecker,
             Iterable<NotificationService> notificationServices) {
         this.check = check;
         this.alertsStore = alertsStore;
