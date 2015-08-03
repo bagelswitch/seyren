@@ -135,7 +135,7 @@ public class SeyrenConfig {
         this.elasticsearchUrl = stripEnd(configOrDefault("ES_URL", "http://localhost:9200"), "/");
         this.elasticsearchUsername = configOrDefault("ES_USERNAME", "");
         this.elasticsearchPassword = configOrDefault("ES_PASSWORD", "");
-        this.elasticsearchIndex = configOrDefault("ES_DATABASE", "logstash-*");
+        this.elasticsearchIndex = configOrDefault("ES_INDEX", "logstash-*");
         this.elasticsearchConnectTimeout = Integer.parseInt(configOrDefault("ES_CONNECT_TIMEOUT", "0"));
         this.elasticsearchSocketTimeout = Integer.parseInt(configOrDefault("ES_SOCKET_TIMEOUT", "0"));
 
