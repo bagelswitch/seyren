@@ -44,8 +44,7 @@ public class Elapsed extends Base {
         if (hits.size() != 0) {
             String timestampStr = hits.get(0).getAsJsonObject().getAsJsonObject("_source").get("@timestamp").getAsString();
             DateTime timestamp = ISODateTimeFormat.dateTime().parseDateTime(timestampStr);
-            DateTime now = DateTime.now();
-            long elapsed = now.getMillis() - timestamp.getMillis();
+            long elapsed = getNow().getMillis() - timestamp.getMillis();
             switch (timeUnit) {
                 case day:       elapsed /= 24;
                 case hour:      elapsed /= 60;

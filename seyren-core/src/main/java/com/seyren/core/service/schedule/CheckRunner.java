@@ -19,9 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.inject.Named;
-
-import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,11 +63,12 @@ public class CheckRunner implements Runnable {
         if (!check.isEnabled()) {
             return;
         }
+
+        Instant now = Instant.now();
         
         try {
-            Map<String, Optional<BigDecimal>> targetValues = targetChecker.check(check);
+            Map<String, Optional<BigDecimal>> targetValues = targetChecker.check(new TargetChecker.Context(check, now));
             
-            DateTime now = new DateTime();
             BigDecimal warn = check.getWarn();
             BigDecimal error = check.getError();
             
@@ -130,7 +129,7 @@ public class CheckRunner implements Runnable {
             }
 
             Check updatedCheck = checksStore.updateStateAndLastCheckAndLastValues(
-                    check.getId(), worstState, DateTime.now(), Maps.transformValues(targetValues,
+                    check.getId(), worstState, now.toDateTime(), Maps.transformValues(targetValues,
                             new Function<Optional<BigDecimal>, BigDecimal>() {
                                 @Override
                                 public BigDecimal apply(Optional<BigDecimal> input) {
@@ -143,7 +142,7 @@ public class CheckRunner implements Runnable {
             }
             
             for (Subscription subscription : updatedCheck.getSubscriptions()) {
-                if (!subscription.shouldNotify(now, worstState)) {
+                if (!subscription.shouldNotify(now.toDateTime(), worstState)) {
                     continue;
                 }
                 
@@ -171,7 +170,7 @@ public class CheckRunner implements Runnable {
         return last == current;
     }
     
-    private Alert createAlert(String target, BigDecimal value, BigDecimal warn, BigDecimal error, AlertType from, AlertType to, DateTime now) {
+    private Alert createAlert(String target, BigDecimal value, BigDecimal warn, BigDecimal error, AlertType from, AlertType to, Instant now) {
         return new Alert()
                 .withTarget(target)
                 .withValue(value)
@@ -179,7 +178,7 @@ public class CheckRunner implements Runnable {
                 .withError(error)
                 .withFromType(from)
                 .withToType(to)
-                .withTimestamp(now);
+                .withTimestamp(now.toDateTime());
     }
     
 }

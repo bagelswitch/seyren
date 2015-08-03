@@ -13,15 +13,38 @@
  */
 package com.seyren.core.service.checker;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.math.BigDecimal;
 import java.util.Map;
+
+import org.joda.time.Instant;
 
 import com.google.common.base.Optional;
 import com.seyren.core.domain.Check;
 
 public interface TargetChecker {
 
+    final class Context {
+
+        private final Check check;
+        private final Instant now;
+
+        public Context(Check check, Instant now) {
+            this.check = checkNotNull(check);
+            this.now = checkNotNull(now);
+        }
+
+        public Check getCheck() {
+            return check;
+        }
+
+        public Instant getNow() {
+            return now;
+        }
+    }
+
     boolean canHandle(Check check);
-    Map<String, Optional<BigDecimal>> check(Check check) throws Exception;
+    Map<String, Optional<BigDecimal>> check(Context context) throws Exception;
     
 }

@@ -35,11 +35,11 @@ public class MultiTypeTargetChecker implements TargetChecker {
     }
 
     @Override
-    public Map<String, Optional<BigDecimal>> check(Check check) throws Exception {
-        TargetChecker checker = findCheckerFor(check);
+    public Map<String, Optional<BigDecimal>> check(Context context) throws Exception {
+        TargetChecker checker = findCheckerFor(context.getCheck());
         if (checker == null) {
-            throw new IllegalArgumentException("No checkers found for the check: " + check);
+            throw new IllegalArgumentException("No checkers found for the check: " + context.getCheck());
         }
-        return checker.check(check);
+        return checker.check(context);
     }
 }

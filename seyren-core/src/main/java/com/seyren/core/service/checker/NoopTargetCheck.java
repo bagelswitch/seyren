@@ -33,7 +33,7 @@ public class NoopTargetCheck implements TargetChecker {
     }
 
     @Override
-    public Map<String, Optional<BigDecimal>> check(Check check) throws Exception {
-        return ImmutableMap.of(check.getTarget(), Optional.<BigDecimal>of(value));
+    public Map<String, Optional<BigDecimal>> check(Context context) throws Exception {
+        return ImmutableMap.of(context.getCheck().getTarget(), Optional.<BigDecimal>of(value));
     }
 }

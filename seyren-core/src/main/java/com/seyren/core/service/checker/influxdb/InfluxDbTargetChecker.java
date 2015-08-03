@@ -17,7 +17,7 @@ public class InfluxDbTargetChecker extends TargetCheckerSupport {
     }
 
     @Override
-    protected CheckTemplate retrieveTemplate(Check check) throws IOException {
+    protected CheckTemplate retrieveTemplate(Context context) throws IOException {
         return new DefaultCheckTemplate();
     }
 }

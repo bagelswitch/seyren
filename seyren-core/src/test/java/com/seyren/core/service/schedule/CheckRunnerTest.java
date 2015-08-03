@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -49,6 +50,7 @@ import com.seyren.core.store.ChecksStore;
 public class CheckRunnerTest {
     
     private Check mockCheck;
+    private TargetChecker.Context mockContext;
     private AlertsStore mockAlertsStore;
     private ChecksStore mockChecksStore;
     private TargetChecker mockTargetChecker;
@@ -60,6 +62,7 @@ public class CheckRunnerTest {
     @Before
     public void before() {
         mockCheck = mock(Check.class);
+        mockContext = new TargetChecker.Context(mockCheck, Instant.now());
         mockAlertsStore = mock(AlertsStore.class);
         mockChecksStore = mock(ChecksStore.class);
         mockTargetChecker = mock(TargetChecker.class);
@@ -87,7 +90,7 @@ public class CheckRunnerTest {
         when(mockCheck.getId()).thenReturn("id");
         when(mockCheck.isEnabled()).thenReturn(true);
         when(mockCheck.isAllowNoData()).thenReturn(false);
-        when(mockTargetChecker.check(mockCheck)).thenReturn(new HashMap<String, Optional<BigDecimal>>());
+        when(mockTargetChecker.check(mockContext)).thenReturn(new HashMap<String, Optional<BigDecimal>>());
         when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.UNKNOWN), any(DateTime.class),
                 Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         checkRunner.run();
@@ -100,7 +103,7 @@ public class CheckRunnerTest {
         when(mockCheck.getId()).thenReturn("id");
         when(mockCheck.isEnabled()).thenReturn(true);
         when(mockCheck.isAllowNoData()).thenReturn(true);
-        when(mockTargetChecker.check(mockCheck)).thenReturn(new HashMap<String, Optional<BigDecimal>>());
+        when(mockTargetChecker.check(mockContext)).thenReturn(new HashMap<String, Optional<BigDecimal>>());
         when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.OK), any(DateTime.class),
                 Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         checkRunner.run();
@@ -111,7 +114,7 @@ public class CheckRunnerTest {
     @Test
     public void anExceptionWhileRunningIsHandled() throws Exception {
         when(mockCheck.isEnabled()).thenReturn(true);
-        when(mockTargetChecker.check(mockCheck)).thenThrow(new Exception("Boom!"));
+        when(mockTargetChecker.check(mockContext)).thenThrow(new Exception("Boom!"));
         checkRunner.run();
     }
     
@@ -120,7 +123,7 @@ public class CheckRunnerTest {
         when(mockCheck.isEnabled()).thenReturn(true);
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.<BigDecimal>absent());
-        when(mockTargetChecker.check(mockCheck)).thenReturn(targetValues);
+        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
         checkRunner.run();
     }
     
@@ -137,7 +140,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockCheck)).thenReturn(targetValues);
+        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(null);
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.OK);
         checkRunner.run();
@@ -157,7 +160,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockCheck)).thenReturn(targetValues);
+        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.WARN);
         
@@ -188,7 +191,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockCheck)).thenReturn(targetValues);
+        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         
@@ -222,7 +225,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockCheck)).thenReturn(targetValues);
+        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         
@@ -257,7 +260,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockCheck)).thenReturn(targetValues);
+        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         
@@ -293,7 +296,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockCheck)).thenReturn(targetValues);
+        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         
@@ -329,7 +332,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockCheck)).thenReturn(targetValues);
+        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         

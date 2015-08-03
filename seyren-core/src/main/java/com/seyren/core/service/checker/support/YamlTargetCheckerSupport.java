@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.seyren.core.domain.Check;
 
 public abstract class YamlTargetCheckerSupport extends TargetCheckerSupport {
 
@@ -25,8 +24,8 @@ public abstract class YamlTargetCheckerSupport extends TargetCheckerSupport {
     }
 
     @Override
-    protected CheckTemplate retrieveTemplate(Check check) throws IOException {
-        ObjectNode o = (ObjectNode) YAML_MAPPER.readTree(check.getTarget());
+    protected CheckTemplate retrieveTemplate(Context context) throws IOException {
+        ObjectNode o = (ObjectNode) YAML_MAPPER.readTree(context.getCheck().getTarget());
         checkArgument(o.size() == 1);
         Map.Entry<String, JsonNode> e = o.fields().next();
         Class<? extends CheckTemplate> clazz = templates.get(e.getKey());

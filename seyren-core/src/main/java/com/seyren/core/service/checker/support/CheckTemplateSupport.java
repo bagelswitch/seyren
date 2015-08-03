@@ -13,6 +13,7 @@ public abstract class CheckTemplateSupport implements CheckTemplate {
 
     private String name;
     private Check check;
+    private Instant now;
 
     public String getName() {
         return name;
@@ -32,6 +33,15 @@ public abstract class CheckTemplateSupport implements CheckTemplate {
         this.check = checkNotNull(check);
     }
 
+    public Instant getNow() {
+        return now;
+    }
+
+    @Override
+    public void setNow(Instant now) {
+        this.now = checkNotNull(now);
+    }
+
     protected Instant getCheckFrom() {
         String s = Strings.nullToEmpty(getCheck().getFrom()).trim();
         if (s.isEmpty()) {
@@ -49,10 +59,11 @@ public abstract class CheckTemplateSupport implements CheckTemplate {
     }
 
     protected Instant toInstant(String s) {
+        checkNotNull(getNow());
         s = s.trim();
         if (s.startsWith("-")) {
             Period period = PeriodFormats.DEFAULT.parsePeriod(s);
-            return Instant.now().plus(period.toStandardDuration());
+            return getNow().plus(period.toStandardDuration());
         } else {
             throw new IllegalArgumentException("The relative datetime must start with a minus sign ('-')");
         }

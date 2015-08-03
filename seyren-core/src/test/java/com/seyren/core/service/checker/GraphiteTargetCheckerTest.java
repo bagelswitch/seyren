@@ -13,13 +13,17 @@
  */
 package com.seyren.core.service.checker;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
+import org.joda.time.Instant;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -60,7 +64,7 @@ public class GraphiteTargetCheckerTest {
         
         when(mockGraphiteHttpClient.getTargetJson("service.error.1MinuteRate", null, null)).thenReturn(node);
         
-        Map<String, Optional<BigDecimal>> values = checker.check(check());
+        Map<String, Optional<BigDecimal>> values = checker.check(context());
         
         assertThat(values, hasKey("service.error.1MinuteRate"));
     }
@@ -71,7 +75,7 @@ public class GraphiteTargetCheckerTest {
         
         when(mockGraphiteHttpClient.getTargetJson("service.error.1MinuteRate", null, null)).thenReturn(node);
         
-        Map<String, Optional<BigDecimal>> values = checker.check(check());
+        Map<String, Optional<BigDecimal>> values = checker.check(context());
         
         assertThat(values.get("service.error.1MinuteRate").isPresent(), is(true));
         assertThat(values.get("service.error.1MinuteRate").get(), is(new BigDecimal("0.06")));
@@ -83,7 +87,7 @@ public class GraphiteTargetCheckerTest {
         
         when(mockGraphiteHttpClient.getTargetJson("service.error.1MinuteRate", null, null)).thenReturn(node);
         
-        Map<String, Optional<BigDecimal>> values = checker.check(check());
+        Map<String, Optional<BigDecimal>> values = checker.check(context());
         
         assertThat(values.get("service.error.1MinuteRate").get(), is(new BigDecimal("0.01")));
     }
@@ -94,7 +98,7 @@ public class GraphiteTargetCheckerTest {
         
         when(mockGraphiteHttpClient.getTargetJson("service.error.1MinuteRate", null, null)).thenReturn(node);
         
-        Map<String, Optional<BigDecimal>> values = checker.check(check());
+        Map<String, Optional<BigDecimal>> values = checker.check(context());
         
         assertThat(values.get("service.error.1MinuteRate").get(), is(new BigDecimal("0.17")));
     }
@@ -105,7 +109,7 @@ public class GraphiteTargetCheckerTest {
         
         when(mockGraphiteHttpClient.getTargetJson("service.error.1MinuteRate", null, null)).thenReturn(node);
         
-        Map<String, Optional<BigDecimal>> values = checker.check(check());
+        Map<String, Optional<BigDecimal>> values = checker.check(context());
         
         assertThat(values.get("service.error.1MinuteRate").isPresent(), is(false));
     }
@@ -119,7 +123,7 @@ public class GraphiteTargetCheckerTest {
         
         when(mockGraphiteHttpClient.getTargetJson("service.*.1MinuteRate", null, null)).thenReturn(node);
         
-        Map<String, Optional<BigDecimal>> values = checker.check(checkWithTarget("service.*.1MinuteRate"));
+        Map<String, Optional<BigDecimal>> values = checker.check(contextWithTarget("service.*.1MinuteRate"));
         
         assertThat(values.entrySet(), hasSize(2));
         assertThat(values.get("service.error.1MinuteRate").get(), is(new BigDecimal("0.01")));
@@ -130,21 +134,20 @@ public class GraphiteTargetCheckerTest {
     public void exceptionGettingDataFromGraphiteIsHandled() throws Exception {
         when(mockGraphiteHttpClient.getTargetJson("service.*.1MinuteRate", null, null)).thenThrow(new GraphiteReadException("Graphite bad times", new RuntimeException("Bad times")));
         
-        Map<String, Optional<BigDecimal>> values = checker.check(checkWithTarget("service.*.1MinuteRate"));
+        Map<String, Optional<BigDecimal>> values = checker.check(contextWithTarget("service.*.1MinuteRate"));
         
         assertThat(values.size(), is(0));
     }
     
-    private Check check() {
-        return checkWithTarget("service.error.1MinuteRate");
+    private TargetChecker.Context context() {
+        return contextWithTarget("service.error.1MinuteRate");
     }
     
-    private Check checkWithTarget(String target) {
-        return new Check()
+    private TargetChecker.Context contextWithTarget(String target) {
+        return new TargetChecker.Context(new Check()
                 .withId("id")
                 .withTarget(target)
                 .withWarn(new BigDecimal("0.15"))
-                .withError(new BigDecimal("0.20"));
+                .withError(new BigDecimal("0.20")), Instant.now());
     }
-    
 }

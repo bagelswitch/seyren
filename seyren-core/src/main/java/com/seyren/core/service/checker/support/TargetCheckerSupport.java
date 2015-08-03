@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 import com.google.common.base.Optional;
-import com.seyren.core.domain.Check;
 import com.seyren.core.service.checker.TargetChecker;
 
 public abstract class TargetCheckerSupport implements TargetChecker {
@@ -18,14 +17,15 @@ public abstract class TargetCheckerSupport implements TargetChecker {
     private AutowireCapableBeanFactory applicationContext;
 
     @Override
-    public Map<String, Optional<BigDecimal>> check(Check check) throws Exception {
-        return getTemplate(check).apply();
+    public Map<String, Optional<BigDecimal>> check(Context context) throws Exception {
+        return getTemplate(context).apply();
     }
 
-    protected final CheckTemplate getTemplate(Check check) throws IOException {
-        CheckTemplate r = retrieveTemplate(check);
+    protected final CheckTemplate getTemplate(Context context) throws IOException {
+        CheckTemplate r = retrieveTemplate(context);
 
-        r.setCheck(check);
+        r.setCheck(context.getCheck());
+        r.setNow(context.getNow());
         applicationContext.autowireBean(r);
 
         initTemplate(r);
@@ -33,7 +33,7 @@ public abstract class TargetCheckerSupport implements TargetChecker {
         return r;
     }
 
-    protected abstract CheckTemplate retrieveTemplate(Check check) throws IOException;
+    protected abstract CheckTemplate retrieveTemplate(Context context) throws IOException;
 
     protected void initTemplate(CheckTemplate r) throws IOException {
     }
