@@ -14,6 +14,7 @@
 package com.seyren.core.service.schedule;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -27,10 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Description;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.joda.time.Instant;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -63,6 +67,7 @@ public class CheckRunnerTest {
     public void before() {
         mockCheck = mock(Check.class);
         mockContext = new TargetChecker.Context(mockCheck, Instant.now());
+        DateTimeUtils.setCurrentMillisFixed(mockContext.getNow().getMillis());
         mockAlertsStore = mock(AlertsStore.class);
         mockChecksStore = mock(ChecksStore.class);
         mockTargetChecker = mock(TargetChecker.class);
@@ -90,7 +95,7 @@ public class CheckRunnerTest {
         when(mockCheck.getId()).thenReturn("id");
         when(mockCheck.isEnabled()).thenReturn(true);
         when(mockCheck.isAllowNoData()).thenReturn(false);
-        when(mockTargetChecker.check(mockContext)).thenReturn(new HashMap<String, Optional<BigDecimal>>());
+        when(mockTargetChecker.check(similar(mockContext))).thenReturn(new HashMap<String, Optional<BigDecimal>>());
         when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.UNKNOWN), any(DateTime.class),
                 Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         checkRunner.run();
@@ -103,7 +108,7 @@ public class CheckRunnerTest {
         when(mockCheck.getId()).thenReturn("id");
         when(mockCheck.isEnabled()).thenReturn(true);
         when(mockCheck.isAllowNoData()).thenReturn(true);
-        when(mockTargetChecker.check(mockContext)).thenReturn(new HashMap<String, Optional<BigDecimal>>());
+        when(mockTargetChecker.check(similar(mockContext))).thenReturn(new HashMap<String, Optional<BigDecimal>>());
         when(mockChecksStore.updateStateAndLastCheckAndLastValues(eq("id"), eq(AlertType.OK), any(DateTime.class),
                 Matchers.<Map<String, BigDecimal>>any())).thenReturn(mockCheck);
         checkRunner.run();
@@ -114,7 +119,7 @@ public class CheckRunnerTest {
     @Test
     public void anExceptionWhileRunningIsHandled() throws Exception {
         when(mockCheck.isEnabled()).thenReturn(true);
-        when(mockTargetChecker.check(mockContext)).thenThrow(new Exception("Boom!"));
+        when(mockTargetChecker.check(similar(mockContext))).thenThrow(new Exception("Boom!"));
         checkRunner.run();
     }
     
@@ -123,7 +128,7 @@ public class CheckRunnerTest {
         when(mockCheck.isEnabled()).thenReturn(true);
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.<BigDecimal>absent());
-        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
+        when(mockTargetChecker.check(similar(mockContext))).thenReturn(targetValues);
         checkRunner.run();
     }
     
@@ -140,7 +145,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
+        when(mockTargetChecker.check(similar(mockContext))).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(null);
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.OK);
         checkRunner.run();
@@ -160,7 +165,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
+        when(mockTargetChecker.check(any(TargetChecker.Context.class))).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.WARN);
         
@@ -191,7 +196,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
+        when(mockTargetChecker.check(similar(mockContext))).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         
@@ -225,7 +230,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
+        when(mockTargetChecker.check(similar(mockContext))).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         
@@ -260,7 +265,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
+        when(mockTargetChecker.check(similar(mockContext))).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         
@@ -296,7 +301,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
+        when(mockTargetChecker.check(similar(mockContext))).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         
@@ -332,7 +337,7 @@ public class CheckRunnerTest {
         
         Map<String, Optional<BigDecimal>> targetValues = new HashMap<String, Optional<BigDecimal>>();
         targetValues.put("target", Optional.of(value));
-        when(mockTargetChecker.check(mockContext)).thenReturn(targetValues);
+        when(mockTargetChecker.check(similar(mockContext))).thenReturn(targetValues);
         when(mockAlertsStore.getLastAlertForTargetOfCheck("target", "id")).thenReturn(new Alert().withToType(AlertType.WARN));
         when(mockValueChecker.checkValue(value, warn, error)).thenReturn(AlertType.ERROR);
         
@@ -349,5 +354,34 @@ public class CheckRunnerTest {
         
         verify(mockAlertsStore).createAlert(eq("id"), any(Alert.class));
     }
-    
+
+
+    static class SimilarContext extends ArgumentMatcher<TargetChecker.Context> {
+
+        private final TargetChecker.Context wanted;
+
+        public SimilarContext(TargetChecker.Context wanted) {
+            this.wanted = wanted;
+        }
+
+        @Override
+        public boolean matches(Object actual) {
+            if (!(actual instanceof TargetChecker.Context)) {
+                return false;
+            }
+            TargetChecker.Context a = (TargetChecker.Context) actual;
+            return a.getCheck() == wanted.getCheck() &&
+                    a.getNow().equals(wanted.getNow());
+        }
+
+        public void describeTo(Description description) {
+            description.appendText("similar(")
+                       .appendText("" + wanted)
+                       .appendText(")");
+        }
+    }
+
+    TargetChecker.Context similar(TargetChecker.Context wanted) {
+        return argThat(new SimilarContext(wanted));
+    }
 }
