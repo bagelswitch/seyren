@@ -231,6 +231,11 @@
                 <version>${com.fasterxml.jackson.jaxrs.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${com.fasterxml.jackson.jaxrs.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.github.rest-driver</groupId>
                 <artifactId>rest-client-driver</artifactId>
                 <version>${com.github.rest-driver.version}</version>

@@ -100,6 +100,8 @@ public class SeyrenConfig {
     private final String emailSubjectTemplateFileName;
     private final int noOfThreads;
     private final String httpNotificationUrl;
+    private final String elasticsearchTimestampField;
+
     public SeyrenConfig() {
         
         // Base
@@ -136,6 +138,7 @@ public class SeyrenConfig {
         this.elasticsearchUsername = configOrDefault("ES_USERNAME", "");
         this.elasticsearchPassword = configOrDefault("ES_PASSWORD", "");
         this.elasticsearchIndex = configOrDefault("ES_INDEX", "logstash-*");
+        this.elasticsearchTimestampField = configOrDefault("ES_TIMESTAMP_FIELD", "@timestamp");
         this.elasticsearchConnectTimeout = Integer.parseInt(configOrDefault("ES_CONNECT_TIMEOUT", "0"));
         this.elasticsearchSocketTimeout = Integer.parseInt(configOrDefault("ES_SOCKET_TIMEOUT", "0"));
 
@@ -479,6 +482,11 @@ public class SeyrenConfig {
     @JsonIgnore
     public String getElasticsearchIndex() {
         return elasticsearchIndex;
+    }
+
+    @JsonIgnore
+    public String getElasticsearchTimestampField() {
+        return elasticsearchTimestampField;
     }
 
     @JsonIgnore

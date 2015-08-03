@@ -5,9 +5,6 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import com.google.common.base.Splitter;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -43,52 +40,13 @@ public class ElasticsearchClient {
         index = c.getElasticsearchIndex();
     }
 
-    public SearchResult query(String query) throws IOException {
+    public SearchResult search(String query) throws IOException {
         SearchResult r = client.get().execute(new Search.Builder(query)
             .addIndex(index)
             .build());
+        if (!r.isSucceeded()) {
+            throw new ElasticsearchApiException(r.getErrorMessage());
+        }
         return r;
-    }
-
-    public SearchResult querySimple(String luceneQuery, String from, String to, int limit) throws IOException {
-        String q = "{" +
-                "    \"query\": {" +
-                "        \"filtered\": {" +
-                "            \"query\": {" +
-                "                \"bool\": {" +
-                "                    \"should\": [{" +
-                "                        \"query_string\": {" +
-                "                            \"query\": \"${luceneQuery}\"" +
-                "                        }" +
-                "                    }]" +
-                "                }" +
-                "            }," +
-                "            \"filter\": {" +
-                "                \"bool\": {" +
-                "                    \"must\": [{" +
-                "                        \"range\": {" +
-                "                            \"@timestamp\": {" +
-                "                                \"from\": \"${from}\"," +
-                "                                \"to\": \"${to}\"" +
-                "                            }" +
-                "                        }" +
-                "                    }]" +
-                "                }" +
-                "            }" +
-                "        }" +
-                "    }," +
-                "    \"size\": ${limit}" +
-                "}";
-        q = StringUtils.replaceEach(q, new String[]{
-                        "${luceneQuery}",
-                        "${from}",
-                        "${to}",
-                        "${limit}" },
-                new String[]{
-                        StringEscapeUtils.escapeJson(luceneQuery),
-                        StringEscapeUtils.escapeJson(from),
-                        StringEscapeUtils.escapeJson(to),
-                        String.valueOf(limit) });
-        return query(q);
     }
 }
