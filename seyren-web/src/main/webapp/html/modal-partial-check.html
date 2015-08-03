@@ -10,19 +10,19 @@
             <fieldset>
                 <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.name'].$invalid }">
                     <label class="col-sm-3 control-label" for="check.name">Name</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-9">
                         <input id="check.name" class="form-control" name="check.name" ng-model="check.name" type="text" required />
                     </div>
                 </div>
                 <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.description'].$invalid }">
                     <label class="col-sm-3 control-label" for="check.description">Description</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-9">
                         <input id="check.description" class="form-control" name="check.description" ng-model="check.description" type="text" />
                     </div>
                 </div>
                 <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.type'].$invalid }">
                     <label class="col-sm-3 control-label" for="check.type">Type</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-3">
                         <select id="check.type" class="form-control" name="check.type" ng-model="check.type">
                             <option value="GRAPHITE">Graphite</option>
                             <option value="INFLUX_DB">InfluxDB</option>
@@ -32,19 +32,19 @@
                 </div>
                 <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.target'].$invalid }">
                     <label class="col-sm-3 control-label" for="check.target">Target</label>
-                    <div class="col-sm-7">
-                        <input id="check.target" class="form-control"  name="check.target" ng-model="check.target" type="text" required />
+                    <div class="col-sm-9">
+                        <textarea id="check.target" class="form-control"  name="check.target" ng-model="check.target" rows="3" style="overflow: scroll; font-family: monospace" wrap="off" required></textarea>
                     </div>
                 </div>
                 <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.from'].$invalid }">
                     <label class="col-sm-3 control-label" for="check.from">From</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-3">
                         <input id="check.from" class="form-control" name="check.from" ng-model="check.from" type="text" />
                     </div>
                 </div>
                 <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.until'].$invalid }">
                     <label class="col-sm-3 control-label" for="check.until">Until</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-3">
                         <input id="check.until" class="form-control" name="check.until" ng-model="check.until" type="text" />
                     </div>
                 </div>
