@@ -191,6 +191,14 @@
                     }, function (err) {
                         console.log('Saving check failed');
                     });
+                },
+                resetCheckState: function (check) {
+                    check.state = 'OK';
+                    Checks.update({ checkId:  check.id}, check, function () {
+                        $rootScope.$broadcast('check:updated');
+                    }, function () {
+                        console.log('Saving check failed');
+                    });
                 }
             };
         });

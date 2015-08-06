@@ -207,5 +207,8 @@
             });
         };
 
+        $scope.resetCheckState = function (check) {
+            Seyren.resetCheckState(check);
+        };
     });
 }());

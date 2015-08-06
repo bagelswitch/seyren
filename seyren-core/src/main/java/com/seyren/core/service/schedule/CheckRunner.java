@@ -93,16 +93,8 @@ public class CheckRunner implements Runnable {
                 }
                 
                 BigDecimal currentValue = value.get();
-                
-                Alert lastAlert = alertsStore.getLastAlertForTargetOfCheck(target, check.getId());
-                
-                AlertType lastState;
-                
-                if (lastAlert == null) {
-                    lastState = AlertType.OK;
-                } else {
-                    lastState = lastAlert.getToType();
-                }
+
+                AlertType lastState = check.getState();
                 
                 AlertType currentState = valueChecker.checkValue(currentValue, warn, error);
                 
