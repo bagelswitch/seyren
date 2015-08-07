@@ -56,13 +56,19 @@
                     <p class="form-control-static">{{check.target}}</p>
                 </div>
             </div>
-            <div class="form-group detail-form" ng-show="check.from">
+            <div class="form-group detail-form">
+                <label class="col-lg-2 control-label">One-time?</label>
+                <div class="col-lg-10">
+                    <p class="form-control-static">{{check.oneTime ? 'Yes' : 'No'}}</p>
+                </div>
+            </div>
+            <div class="form-group detail-form" ng-show="!check.oneTime && check.from">
                 <label class="col-lg-2 control-label">From:</label>
                 <div class="col-lg-10">
                     <p class="form-control-static">{{check.from}}</p>
                 </div>
             </div>
-            <div class="form-group detail-form" ng-show="check.until">
+            <div class="form-group detail-form" ng-show="!check.oneTime && check.until">
                 <label class="col-lg-2 control-label">Until:</label>
                 <div class="col-lg-10">
                     <p class="form-control-static">{{check.until}}</p>
@@ -98,7 +104,7 @@
                     <p class="form-control-static"><input type="checkbox" ng-checked="check.allowNoData" ng-click="swapCheckAllowNoDataEnabled(check)" /> </p>
                 </div>
             </div>
-            <div class="form-group detail-form">
+            <div class="form-group detail-form" ng-hide="check.oneTime">
                 <label class="col-lg-2 control-label">Same-state alerts:</label>
                 <div class="col-lg-10">
                     <p class="form-control-static">{{check.disableSameStateAlerts ? 'Disabled' : 'Enabled'}}</p>

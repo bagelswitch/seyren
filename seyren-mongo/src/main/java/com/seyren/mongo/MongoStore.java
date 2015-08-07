@@ -252,7 +252,8 @@ public class MongoStore implements ChecksStore, AlertsStore, SubscriptionsStore 
                 .with("disableSameStateAlerts", check.isDisableSameStateAlerts())
                 .with("lastCheck", lastCheck == null ? null : new Date(lastCheck.getMillis()))
                 .with("lastValues", check.getLastValues() == null ? null : mapper.targetValuesTo(check.getLastValues()))
-                .with("state", check.getState().toString());
+                .with("state", check.getState().toString())
+                .with("oneTime", check.isOneTime());
         
         DBObject setObject = object("$set", partialObject);
         

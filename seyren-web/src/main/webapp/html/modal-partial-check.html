@@ -36,13 +36,21 @@
                         <textarea id="check.target" class="form-control"  name="check.target" ng-model="check.target" rows="3" style="overflow: scroll; font-family: monospace" wrap="off" required></textarea>
                     </div>
                 </div>
-                <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.from'].$invalid }">
+                <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.oneTime'].$invalid }">
+                    <label class="col-sm-3 control-label" for="check.oneTime">One-time?</label>
+                    <div class="col-sm-1">
+                        <label class="checkbox inline">
+                            <input id="check.oneTime" name="check.allowNoData" ng-model="check.oneTime" type="checkbox" ng-checked="check.oneTime">
+                        </label>
+                    </div>
+                </div>
+                <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.from'].$invalid }" ng-hide="check.oneTime">
                     <label class="col-sm-3 control-label" for="check.from">From</label>
                     <div class="col-sm-3">
                         <input id="check.from" class="form-control" name="check.from" ng-model="check.from" type="text" />
                     </div>
                 </div>
-                <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.until'].$invalid }">
+                <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.until'].$invalid }" ng-hide="check.oneTime">
                     <label class="col-sm-3 control-label" for="check.until">Until</label>
                     <div class="col-sm-3">
                         <input id="check.until" class="form-control" name="check.until" ng-model="check.until" type="text" />
@@ -87,7 +95,7 @@
                         </label>
                     </div>
                 </div>
-                <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.disableSameStateAlerts'].$invalid }">
+                <div ng-class="{ 'form-group': true, 'has-error': checkForm['check.disableSameStateAlerts'].$invalid }" ng-hide="check.oneTime">
                     <label class="col-sm-3 control-label" for="check.disableSameStateAlerts">Disable same-state alerts</label>
                     <div class="col-sm-1">
                         <label class="checkbox inline">

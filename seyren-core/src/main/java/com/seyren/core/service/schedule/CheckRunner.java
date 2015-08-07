@@ -95,24 +95,27 @@ public class CheckRunner implements Runnable {
                 BigDecimal currentValue = value.get();
 
                 AlertType lastState = check.getState();
-                
+
                 AlertType currentState = valueChecker.checkValue(currentValue, warn, error);
-                
+
                 if (currentState.isWorseThan(worstState)) {
                     worstState = currentState;
                 }
-                
+
                 if (isStillOk(lastState, currentState) ||
-                        check.isDisableSameStateAlerts() && lastState == currentState) {
+                        !check.isOneTime() && check.isDisableSameStateAlerts() && stateIsTheSame(lastState, currentState) ||
+                        // For one-time checks ignore <ANY> -> OK state transitions.
+                        check.isOneTime() && currentState == AlertType.OK) {
                     continue;
                 }
-                
+
                 Alert alert = createAlert(target, currentValue, warn, error, lastState, currentState, now);
                 
                 alertsStore.createAlert(check.getId(), alert);
-                
-                // Only notify if the alert has changed state
-                if (stateIsTheSame(lastState, currentState)) {
+
+                // For normal checks notify only if the alert has changed state.
+                // For one-time checks always notify.
+                if (!check.isOneTime() && stateIsTheSame(lastState, currentState)) {
                     continue;
                 }
                 
@@ -120,8 +123,15 @@ public class CheckRunner implements Runnable {
                 
             }
 
+            AlertType newState;
+            if (!check.isOneTime() || worstState.isWorseThan(check.getState())) {
+                newState = worstState;
+            } else {
+                // Don't change the check state.
+                newState = check.getState();
+            }
             Check updatedCheck = checksStore.updateStateAndLastCheckAndLastValues(
-                    check.getId(), worstState, now.toDateTime(), Maps.transformValues(targetValues,
+                    check.getId(), newState, now.toDateTime(), Maps.transformValues(targetValues,
                             new Function<Optional<BigDecimal>, BigDecimal>() {
                                 @Override
                                 public BigDecimal apply(Optional<BigDecimal> input) {

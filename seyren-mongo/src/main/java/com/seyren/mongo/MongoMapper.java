@@ -60,7 +60,8 @@ public class MongoMapper {
         for (Object o : list) {
             subscriptions.add(subscriptionFrom((DBObject) o));
         }
-        
+        boolean oneTime = getOptionalBoolean(dbo, "oneTime", false);
+
         return new Check().withId(id)
                 .withName(name)
                 .withDescription(description)
@@ -77,7 +78,8 @@ public class MongoMapper {
                 .withState(state)
                 .withLastCheck(lastCheck)
                 .withLastValues(lastValues)
-                .withSubscriptions(subscriptions);
+                .withSubscriptions(subscriptions)
+                .withOneTime(oneTime);
     }
 
     public Map<String, BigDecimal> targetValuesFrom(Collection<Object> list) {
@@ -212,6 +214,7 @@ public class MongoMapper {
 
             map.put("subscriptions", dbSubscriptions);
         }
+        map.put("oneTime", check.isOneTime());
         return map;
     }
     

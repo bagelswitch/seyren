@@ -59,6 +59,7 @@ public class Check {
     private Map<String, BigDecimal> lastValues;
     private DateTime lastCheck;
     private List<Subscription> subscriptions = new ArrayList<Subscription>();
+    private boolean oneTime;
     
     public String getId() {
         return id;
@@ -286,5 +287,17 @@ public class Check {
         setSubscriptions(subscriptions);
         return this;
     }
-    
+
+    public boolean isOneTime() {
+        return oneTime;
+    }
+
+    public void setOneTime(boolean oneTime) {
+        this.oneTime = oneTime;
+    }
+
+    public Check withOneTime(boolean oneTime) {
+        setOneTime(oneTime);
+        return this;
+    }
 }

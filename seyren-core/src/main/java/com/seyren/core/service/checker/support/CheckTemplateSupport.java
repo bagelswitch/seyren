@@ -15,6 +15,7 @@ package com.seyren.core.service.checker.support;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 
@@ -56,6 +57,12 @@ public abstract class CheckTemplateSupport implements CheckTemplate {
     }
 
     protected Instant getCheckFrom() {
+        if (getCheck().isOneTime()) {
+            DateTime lastCheck = getCheck().getLastCheck();
+            if (lastCheck != null) {
+                return lastCheck.toInstant();
+            }
+        }
         String s = Strings.nullToEmpty(getCheck().getFrom()).trim();
         if (s.isEmpty()) {
             s = "-11m";
@@ -64,6 +71,9 @@ public abstract class CheckTemplateSupport implements CheckTemplate {
     }
 
     protected Instant getCheckUntil() {
+        if (getCheck().isOneTime()) {
+            return getNow();
+        }
         String s = Strings.nullToEmpty(getCheck().getUntil()).trim();
         if (s.isEmpty()) {
             s = "-1m";
