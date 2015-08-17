@@ -60,33 +60,39 @@ public abstract class CheckTemplateSupport implements CheckTemplate {
         if (getCheck().isOneTime()) {
             DateTime lastCheck = getCheck().getLastCheck();
             if (lastCheck != null) {
-                return lastCheck.toInstant();
+                return lastCheck.toInstant().plus(getCheckUntilPeriod().toStandardDuration());
             }
         }
+
+        Instant now = checkNotNull(getNow());
+        return now.plus(getCheckFromPeriod().toStandardDuration());
+    }
+
+    protected Period getCheckFromPeriod() {
         String s = Strings.nullToEmpty(getCheck().getFrom()).trim();
         if (s.isEmpty()) {
             s = "-11m";
         }
-        return toInstant(s);
+        return toPeriod(s);
     }
 
     protected Instant getCheckUntil() {
-        if (getCheck().isOneTime()) {
-            return getNow();
-        }
+        Instant now = checkNotNull(getNow());
+        return now.plus(getCheckUntilPeriod().toStandardDuration());
+    }
+
+    protected Period getCheckUntilPeriod() {
         String s = Strings.nullToEmpty(getCheck().getUntil()).trim();
         if (s.isEmpty()) {
             s = "-1m";
         }
-        return toInstant(s);
+        return toPeriod(s);
     }
 
-    protected Instant toInstant(String s) {
-        checkNotNull(getNow());
+    protected Period toPeriod(String s) {
         s = s.trim();
         if (s.startsWith("-")) {
-            Period period = PeriodFormats.DEFAULT.parsePeriod(s);
-            return getNow().plus(period.toStandardDuration());
+            return PeriodFormats.DEFAULT.parsePeriod(s);
         } else {
             throw new IllegalArgumentException("The relative datetime must start with a minus sign ('-')");
         }

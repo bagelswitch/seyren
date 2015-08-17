@@ -62,13 +62,13 @@
                     <p class="form-control-static">{{check.oneTime ? 'Yes' : 'No'}}</p>
                 </div>
             </div>
-            <div class="form-group detail-form" ng-show="!check.oneTime && check.from">
+            <div class="form-group detail-form" ng-show="check.from">
                 <label class="col-lg-2 control-label">From:</label>
                 <div class="col-lg-10">
                     <p class="form-control-static">{{check.from}}</p>
                 </div>
             </div>
-            <div class="form-group detail-form" ng-show="!check.oneTime && check.until">
+            <div class="form-group detail-form" ng-show="check.until">
                 <label class="col-lg-2 control-label">Until:</label>
                 <div class="col-lg-10">
                     <p class="form-control-static">{{check.until}}</p>

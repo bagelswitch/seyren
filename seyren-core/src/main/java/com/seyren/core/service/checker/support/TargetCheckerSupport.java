@@ -31,7 +31,9 @@ public abstract class TargetCheckerSupport implements TargetChecker {
 
     @Override
     public Map<String, Optional<BigDecimal>> check(Context context) throws Exception {
-        return getTemplate(context).apply();
+        CheckTemplate template = getTemplate(context);
+        Map<String, Optional<BigDecimal>> r = template.apply();
+        return r;
     }
 
     protected final CheckTemplate getTemplate(Context context) throws IOException {
