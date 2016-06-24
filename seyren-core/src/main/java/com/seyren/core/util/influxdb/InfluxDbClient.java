@@ -23,18 +23,31 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.client.AuthCache;
+import org.apache.http.impl.auth.BasicScheme;
 
 import com.seyren.core.util.config.SeyrenConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Named
 public class InfluxDbClient {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfluxDbClient.class);
 
     private static final int DEFAULT_MAX_PER_ROUTE = 50;
 
@@ -42,6 +55,8 @@ public class InfluxDbClient {
     private final String username;
     private final String password;
     private final String database;
+    private final String proxyuser;
+    private final String proxypass;
     private final HttpClient httpClient;
 
     private static final ObjectMapperResponseHandler<QueryResponse> QUERY_RESPONSE_HANDLER =
@@ -53,6 +68,8 @@ public class InfluxDbClient {
         username = config.getInfluxDbUsername();
         password = config.getInfluxDbPassword();
         database = config.getInfluxDbDatabase();
+        proxyuser = config.getInfluxDbProxyuser();
+        proxypass = config.getInfluxDbProxypass();
         httpClient = createHttpClient(config);
     }
 
@@ -72,7 +89,21 @@ public class InfluxDbClient {
         HttpGet get = new HttpGet(uri);
         QueryResponse r;
         try {
-            r = httpClient.execute(get, QUERY_RESPONSE_HANDLER);
+            CredentialsProvider provider = new BasicCredentialsProvider();
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(proxyuser, proxypass);
+            provider.setCredentials(AuthScope.ANY, credentials);
+
+            HttpHost targetHost = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
+            AuthCache authCache = new BasicAuthCache();
+            authCache.put(targetHost, new BasicScheme());
+            final HttpClientContext context = HttpClientContext.create();
+            context.setCredentialsProvider(provider);
+            context.setAuthCache(authCache);
+
+            r = httpClient.execute(get, QUERY_RESPONSE_HANDLER, context);
+
+            LOGGER.error(uri.toString());
+            LOGGER.error(r.getMessage());
         } catch (IOException e) {
             throw new InfluxDbReadException("Failed to read from InfluxDB: " + e.getMessage(), e);
         } finally {
@@ -87,6 +118,7 @@ public class InfluxDbClient {
     }
 
     private HttpClient createHttpClient(SeyrenConfig config) {
+
         HttpClient r = HttpClientBuilder.create()
                 .setConnectionManager(createConnectionManager(config))
                 .setDefaultRequestConfig(RequestConfig.custom()

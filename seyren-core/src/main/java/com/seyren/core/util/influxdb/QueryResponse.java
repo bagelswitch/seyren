@@ -134,12 +134,15 @@ public class QueryResponse {
 
     private final List<Result> results;
     private final String error;
+    private final String message;
 
     @JsonCreator
     public QueryResponse(@JsonProperty("results") List<Result> results,
-                         @JsonProperty("error") String error) {
+                         @JsonProperty("error") String error,
+                         @JsonProperty("message") String message) {
         this.results = results;
         this.error = error;
+        this.message = message;
     }
 
     public List<Result> getResults() {
@@ -148,6 +151,10 @@ public class QueryResponse {
 
     public String getError() {
         return error;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public String findFirstError() {
