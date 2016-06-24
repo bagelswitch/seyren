@@ -102,8 +102,8 @@ public class InfluxDbClient {
 
             r = httpClient.execute(get, QUERY_RESPONSE_HANDLER, context);
 
-            LOGGER.error(uri.toString());
-            LOGGER.error(r.getMessage());
+            //LOGGER.error(uri.toString());
+            //LOGGER.error(r.getMessage());
         } catch (IOException e) {
             throw new InfluxDbReadException("Failed to read from InfluxDB: " + e.getMessage(), e);
         } finally {
