@@ -85,7 +85,7 @@ public class GraphiteHttpClient {
     private final int graphiteSocketTimeout;
     private final HttpClient client;
     private final HttpContext context;
-    
+
     @Inject
     public GraphiteHttpClient(SeyrenConfig seyrenConfig) {
         this.graphiteScheme = seyrenConfig.getGraphiteScheme();
@@ -128,6 +128,8 @@ public class GraphiteHttpClient {
                 .addParameter("format", "json")
                 .addParameter("target", target).build();
 
+        //LOGGER.error(uri.toString());
+
         HttpGet get = new HttpGet(uri);
         
         try {
@@ -162,8 +164,12 @@ public class GraphiteHttpClient {
         if (errorThreshold != null) {
             uriBuilder.addParameter("target", String.format(THRESHOLD_TARGET, errorThreshold.toString(), "red", "error level"));
         }
+
+        URI uri = uriBuilder.build();
+
+        //LOGGER.error(uri.toString());
         
-        HttpGet get = new HttpGet(uriBuilder.build());
+        HttpGet get = new HttpGet(uri);
         
         try {
             return client.execute(get, chartBytesHandler, context);
