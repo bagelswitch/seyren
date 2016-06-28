@@ -435,6 +435,9 @@ public class SeyrenConfig {
 
     @JsonIgnore
     public String getInfluxDbUrl() {
+        if (!influxDbUrl.startsWith("http")) {
+            influxDbUrl = "http://" + influxDbUrl;
+        }
         return influxDbUrl;
     }
 

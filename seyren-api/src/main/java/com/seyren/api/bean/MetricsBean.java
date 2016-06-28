@@ -28,9 +28,13 @@ import com.google.common.base.Optional;
 import com.seyren.api.jaxrs.MetricsResource;
 import com.seyren.core.domain.Check;
 import com.seyren.core.service.checker.TargetChecker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Named
 public class MetricsBean implements MetricsResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetricsBean.class);
 
     private final TargetChecker targetChecker;
 
@@ -49,6 +53,7 @@ public class MetricsBean implements MetricsResource {
             result.put(target, targetValues.size());
             return Response.ok(result).build();
         } catch (Exception e) {
+            //LOGGER.error(e.printStackTrace()
             return Response.serverError().build();
         }
     }
