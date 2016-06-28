@@ -49,7 +49,7 @@ public class SeyrenConfig {
     private final int graphiteConnectTimeout;
     private final int graphiteSocketTimeout;
 
-    private final String influxDbUrl;
+    private String influxDbUrl;
     private final String influxDbUsername;
     private final String influxDbPassword;
     private final String influxDbDatabase;
