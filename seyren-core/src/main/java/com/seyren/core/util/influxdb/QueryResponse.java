@@ -35,12 +35,15 @@ public class QueryResponse {
 
         private final String error;
         private final List<Series> series;
+        private final String statementId;
 
         @JsonCreator
         public Result(@JsonProperty("error") String error,
-                      @JsonProperty("series") List<Series> series) {
+                      @JsonProperty("series") List<Series> series,
+                      @JsonProperty("statement_id") String statementId) {
             this.error = error;
             this.series = series != null ? Collections.unmodifiableList(series) : Collections.<Series>emptyList();
+            this.statementId = statementId;
         }
 
         public String getError() {
@@ -49,6 +52,10 @@ public class QueryResponse {
 
         public List<Series> getSeries() {
             return series;
+        }
+
+        public String getStatementId() {
+            return statementId;
         }
     }
 
